@@ -57,6 +57,7 @@ class TestNFPAComplianceEngine:
                     "last_hydrostatic_test": time.time(),
                 }
             ],
+            "hvac_zones": [{"zone_id": "zone1", "has_damper": True}],
         }
         results = engine.run_full_compliance_check(config)
         assert len(results) > 0

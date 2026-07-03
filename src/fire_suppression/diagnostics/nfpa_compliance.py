@@ -84,7 +84,35 @@ class ComplianceRule(Enum):
     EXT_INS_003 = "EXT-INS-003"  # Hydrostatic testing
     EXT_INS_004 = "EXT-INS-004"  # Recharge after use
 
-    # NFPA 10 — Documentation
+    # NFPA 72 — Mass Notification
+    MAS_IPA_001 = "MAS-IPA-001"  # IPAWS/WEA integration configured
+    MAS_COG_001 = "MAS-COG-001"  # COG authorization for IPAWS
+
+    # NFPA 72 — Elevator Recall
+    ELV_REC_001 = "ELV-REC-001"  # Phase I recall tested
+    ELV_PH2_001 = "ELV-PH2-001"  # Phase II firefighter service available
+    ELV_ALT_001 = "ELV-ALT-001"  # Alternate recall floor if lobby blocked
+
+    # NFPA 90A — HVAC Smoke Control
+    HVA_DMP_001 = "HVA-DMP-001"  # Smoke dampers installed at penetrations
+    HVA_FAN_001 = "HVA-FAN-001"  # Supply fans shut down on fire alarm
+    HVA_EXH_001 = "HVA-EXH-001"  # Smoke exhaust fans activated
+    HVA_STA_001 = "HVA-STA-001"  # Stairwell pressurization maintained
+
+    # NFPA 5000 — Smart Building Integration
+    SMB_BAC_001 = "SMB-BAC-001"  # BACnet fire alarm integration
+    SMB_DOR_001 = "SMB-DOR-001"  # Emergency exit unlock on alarm
+    SMB_LIG_001 = "SMB-LIG-001"  # Emergency lighting activation
+
+    # UL 9540A — Battery Thermal Runaway
+    BAT_TEM_001 = "BAT-TEM-001"  # Battery temp monitoring
+    BAT_GAS_001 = "BAT-GAS-001"  # Battery venting gas detection
+    BAT_INS_001 = "BAT-INS-001"  # Battery compartment fire suppression
+
+    # General Safety
+    SAF_VOI_001 = "SAF-VOI-001"  # Voice intelligibility STI >= 0.5
+    SAF_DIS_001 = "SAF-DIS-001"  # Distributed speaker coverage >= 99%
+    SAF_AUD_001 = "SAF-AUD-001"  # Audio system daily test
     EXT_DOC_001 = "EXT-DOC-001"  # Records 1 year
     EXT_DOC_002 = "EXT-DOC-002"  # Records life + 1 year
     EXT_DOC_003 = "EXT-DOC-003"  # Complete inventory
@@ -315,6 +343,12 @@ class NFPAComplianceEngine:
         results.extend(self._check_testing_rules(system_config))
         results.extend(self._check_control_rules(system_config))
         results.extend(self._check_extinguisher_rules(system_config))
+        results.extend(self._check_mass_notification_rules(system_config))
+        results.extend(self._check_elevator_rules(system_config))
+        results.extend(self._check_hvac_rules(system_config))
+        results.extend(self._check_smart_building_rules(system_config))
+        results.extend(self._check_battery_rules(system_config))
+        results.extend(self._check_audio_rules(system_config))
         self._last_check_time = time.time()
         return results
 
@@ -943,6 +977,116 @@ class NFPAComplianceEngine:
         return categories
 
     # ────────────────────────── Helpers ──────────────────────────
+
+    # ── v0.4.0 Additional Checks ────────────────────────────────────
+
+    def _check_mass_notification_rules(self, config: dict) -> list[ComplianceCheckResult]:
+        results = []
+        has_ipaws = config.get("has_ipaws_integration", False)
+        results.append(ComplianceCheckResult(
+            ComplianceRule.MAS_IPA_001,
+            "IPAWS/WEA mass notification integration configured",
+            ComplianceStatus.PASS if has_ipaws else ComplianceStatus.WARN,
+            "IPAWS configured" if has_ipaws else "IPAWS not configured — mass notifications only reach building occupants",
+            "Register for IPAWS COG authorization if facility serves public or has large occupancy" if not has_ipaws else "",
+            "major",
+            auto_fixable=False,
+        ))
+        return results
+
+    def _check_elevator_rules(self, config: dict) -> list[ComplianceCheckResult]:
+        results = []
+        elevators = config.get("elevators", [])
+        for elev in elevators:
+            tested = elev.get("last_phase_i_test", 0)
+            if time.time() - tested > 365 * 86400:
+                results.append(ComplianceCheckResult(
+                    ComplianceRule.ELV_REC_001,
+                    "Elevator Phase I recall tested annually",
+                    ComplianceStatus.FAIL,
+                    f"Elevator '{elev.get('id')}' last Phase I test > 1 year ago",
+                    "Schedule annual elevator Phase I recall test with certified technician",
+                    "critical",
+                    auto_fixable=False,
+                ))
+            else:
+                results.append(ComplianceCheckResult(
+                    ComplianceRule.ELV_REC_001,
+                    "Elevator Phase I recall tested annually",
+                    ComplianceStatus.PASS,
+                    f"Elevator '{elev.get('id')}' Phase I test current",
+                    "",
+                    "critical",
+                ))
+        if not elevators:
+            results.append(ComplianceCheckResult(
+                ComplianceRule.ELV_REC_001,
+                "Elevator Phase I recall tested annually",
+                ComplianceStatus.PASS,
+                "No elevators configured",
+                "",
+                "critical",
+            ))
+        return results
+
+    def _check_hvac_rules(self, config: dict) -> list[ComplianceCheckResult]:
+        results = []
+        zones = config.get("hvac_zones", [])
+        has_dampers = any(z.get("has_damper", False) for z in zones)
+        results.append(ComplianceCheckResult(
+            ComplianceRule.HVA_DMP_001,
+            "Smoke dampers installed at fire-rated HVAC penetrations",
+            ComplianceStatus.PASS if has_dampers else ComplianceStatus.FAIL,
+            "Smoke dampers present" if has_dampers else "No smoke dampers configured",
+            "Install smoke dampers at all fire-rated wall/floor penetrations per NFPA 90A",
+            "critical",
+            auto_fixable=False,
+        ))
+        return results
+
+    def _check_smart_building_rules(self, config: dict) -> list[ComplianceCheckResult]:
+        results = []
+        has_bms = config.get("has_bms_integration", False)
+        results.append(ComplianceCheckResult(
+            ComplianceRule.SMB_BAC_001,
+            "Building management system fire alarm integration",
+            ComplianceStatus.PASS if has_bms else ComplianceStatus.WARN,
+            "BMS integration active" if has_bms else "No BMS integration — elevator/HVAC/doors must be manually coordinated",
+            "Add BACnet/Modbus/KNX bridge for automatic building system coordination",
+            "major",
+            auto_fixable=False,
+        ))
+        return results
+
+    def _check_battery_rules(self, config: dict) -> list[ComplianceCheckResult]:
+        results = []
+        has_battery_monitor = config.get("has_battery_thermal_monitoring", False)
+        results.append(ComplianceCheckResult(
+            ComplianceRule.BAT_TEM_001,
+            "Battery thermal runaway monitoring (UL 9540A)",
+            ComplianceStatus.PASS if has_battery_monitor else ComplianceStatus.WARN,
+            "Battery monitoring active" if has_battery_monitor else "No battery thermal monitoring configured",
+            "Add battery thermal runaway detector for Li-ion storage per UL 9540A",
+            "major",
+            auto_fixable=False,
+        ))
+        return results
+
+    def _check_audio_rules(self, config: dict) -> list[ComplianceCheckResult]:
+        results = []
+        speakers = config.get("speaker_array", [])
+        if speakers:
+            coverage = config.get("speaker_coverage_percent", 100)
+            results.append(ComplianceCheckResult(
+                ComplianceRule.SAF_DIS_001,
+                "Distributed speaker array coverage >= 99%",
+                ComplianceStatus.PASS if coverage >= 99 else ComplianceStatus.FAIL,
+                f"Speaker coverage: {coverage}%" if coverage >= 99 else f"Speaker coverage only {coverage}%",
+                "Add speakers to achieve 99% coverage per NFPA 72 §18.4" if coverage < 99 else "",
+                "critical",
+                auto_fixable=False,
+            ))
+        return results
 
     def _max_detector_spacing(self, positions: dict) -> float:
         """Calculate maximum distance between any two detectors."""

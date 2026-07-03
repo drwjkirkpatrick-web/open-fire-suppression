@@ -183,14 +183,10 @@ PYTHONPATH=src pytest tests/ -v
 | Test Suite | Count |
 |-----------|-------|
 | Core (config, sensors, detection, safety, power, telemetry) | 106 |
-| Original 10 Improvements (TFLite, Kalman, zones, diagnostics, baseline, targeting, audit, notifications) | — |
-| **Resilience & Stay-Alive** (10 bottlenecks) | +10 |
-| **Hermes Bridge** (humidity, fire, status, error, heartbeat) | +6 |
-| **20 Additional Improvements** (thermal drift, water ingress, flicker, ML FP, voice, LEDs, cloud, maintenance, sprinklers, plume, haptic, AQI, seasonal, mobile API, CO, vibration, night vision, compliance, mesh, incident report) | +39 |
-| **NFPA 72/10 Compliance Engine** | +16 |
-| **Kenya SMS** (Africa's Talking, bilingual EN/SW) | +13 |
-| **USB Legal Export** (tamper-evident, encrypted) | +11 |
-| **Total** | **201** |
+| Original 10 Improvements (TFLite, Kalman, zones, diagnostics, baseline, targeting, audit, notifier, mobile, MQTT) | 55 |
+| v0.3.0 (Resilience, Hermes bridge, Additional improvements, NFPA compliance, Kenya SMS, USB export) | 40 |
+| v0.4.0 (20 next-gen modules + 2 audio upgrades + next-gen tech + resilience stay-alive) | 76 |
+| **Total** | **277** |
 
 ### NFPA 72 & NFPA 10 Regulatory Compliance (80–93)
 | # | Feature | Description |
@@ -234,8 +230,46 @@ PYTHONPATH=src pytest tests/ -v
 | 108 | **USB validation** | Pre-export check: sufficient space, writable filesystem, filesystem type detection |
 | 109 | **Encryption option** | Password-protected ZIP with AES-256 for sensitive data transport |
 | 110 | **Integrity verification** | Post-export verify command confirms no files were corrupted during copy |
-| 111 | **Package listing** | Browse all exported packages on the USB drive with metadata |
-| 112 | **Insurance-ready reports** | Pre-formatted for direct submission to insurance adjusters and fire marshals |
+|| 111 | **Package listing** | Browse all exported packages on the USB drive with metadata |
+|| 112 | **Insurance-ready reports** | Pre-formatted for direct submission to insurance adjusters and fire marshals |
+
+### v0.4.0 — Next-Generation Detection & Audio (113–132)
+| # | Feature | Description |
+|---|---------|-------------|
+| 113 | **Distributed speaker array (AUD-001)** | NFPA 72 §18.4 speakers at 15 ft spacing, 78 dBA each — exceeds compliance with reduced volume |
+| 114 | **Directional voice evacuation (AUD-002)** | Per-zone TTS instructions via localized speakers — STI ≥ 0.5 intelligibility |
+| 115 | **LiDAR volumetric smoke detection (MOD-003)** | 905 nm LiDAR returns smoke density in meters, 3D plume tracking |
+| 116 | **mmWave radar fire detection (MOD-004)** | 60 GHz FMCW radar detects combustion turbulence through smoke |
+| 117 | **Acoustic fire signature AI (MOD-005)** | Frequency analysis of crackle/pop/whoosh via FFT, ML classification |
+| 118 | **Gas chromatograph (MOD-006)** | Miniaturized GC for precise combustion gas analysis with retention-time matching |
+| 119 | **Smart building bridge (MOD-007)** | BACnet/IP + Modbus TCP + KNX integration for elevator/HVAC/door control |
+| 120 | **Occupancy-aware detection (MOD-008)** | PIR/ultrasonic/mmwave presence → automatic zone arming & sensitivity |
+| 121 | **Drone fire reconnaissance (MOD-009)** | Autonomous thermal drone dispatch, hotspot map, live stream to incident commander |
+| 122 | **Blockchain audit logging (MOD-010)** | Immutable SHA-256 Merkle tree for tamper-proof fire records |
+| 123 | **Satellite thermal monitoring (MOD-011)** | NASA FIRMS + Copernicus CAMS wildfire detection with smoke plume tracking |
+| 124 | **Firefighter PPE bridge (MOD-012)** | BLE SCBA + PASS integration with MAN-Down alerts |
+| 125 | **Pressure differential detection (MOD-013)** | Fire room positive pressure → smoke plume validation |
+| 126 | **Arc fault detection (MOD-014)** | FFT harmonic analysis of series/parallel arc faults (UL 1699) |
+| 127 | **Battery thermal runaway (MOD-015)** | Li-ion early detection: temp rate + gas venting + voltage collapse |
+| 128 | **Smart glass opacity (MOD-016)** | NFPA 90A + IRC §R310 emergency window clearing |
+| 129 | **Elevator recall (MOD-017)** | NFPA 72 §21.3 Phase I + Phase II recall with firefighter service |
+| 130 | **HVAC smoke control (MOD-018)** | NFPA 90A supply shutdown + smoke exhaust + stairwell pressurization |
+| 131 | **Mass notification gateway (MOD-019)** | IPAWS/WEA + NOAA + Amber Alert fire dispatch integration |
+| 132 | **Post-fire air quality (MOD-020)** | PM2.5/PM10/VOC/CO/NO₂ monitoring with all-clear determination |
+
+### Resilience & Stay-Alive (133–142)
+| # | Feature | Description |
+|---|---------|-------------|
+| 133 | **Sensor health monitoring** | 3-strike degradation with automatic weight redistribution |
+| 134 | **Detection timeout guard** | Fusion >2s → threshold fallback, >5x consecutive → camera-only |
+| 135 | **SQLite corruption recovery** | PRAGMA integrity_check, auto-rebuild from last-known-good |
+| 136 | **Memory leak guard** | Growth >50MB flagged, >100MB triggers gc.collect + alert |
+| 137 | **Network partition queue** | Store-and-forward alerts during outage, auto-retry on restoration |
+| 138 | **Relay fuse monitor** | Per-relay toggle tracking, >1000 cycles → degradation alert |
+| 139 | **Config corruption recovery** | Atomic rename writes with .lkg fallback |
+| 140 | **Disk full guard** | <1GB free → log pruning, <500MB → stop non-critical telemetry |
+| 141 | **Clock drift monitor** | NTP confidence decay, RTC backup, daily auto-sync |
+| 142 | **Process watchdog** | 60s heartbeat — auto-restart with exponential backoff |
 
 ## Compliance & Safety Notice
 
