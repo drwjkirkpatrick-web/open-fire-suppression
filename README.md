@@ -174,7 +174,7 @@ pip install -r requirements.txt
 
 ## Running Tests
 
-All **161 tests pass**. Run the full suite:
+All **477 tests pass**. Run the full suite:
 
 ```bash
 PYTHONPATH=src pytest tests/ -v
@@ -188,7 +188,8 @@ PYTHONPATH=src pytest tests/ -v
 | v0.4.0 (20 next-gen modules + 2 audio upgrades + next-gen tech + resilience stay-alive) | 76 |
 | v0.5.0 (Anti-tamper USB update, Pi-optimized blockchain, file integrity monitor) | 33 |
 | v0.6.0 (Audio keep-alive, fault isolation, 200 EN/SW phrases, 10 UI dashboard improvements) | 37 |
-| **Total** | **347** |
+| SensorManager + dashboard keep-alive fixes | 35 |
+| **Total** | **477** |
 
 ### NFPA 72 & NFPA 10 Regulatory Compliance (80–93)
 | # | Feature | Description |
@@ -334,7 +335,7 @@ PYTHONPATH=src pytest tests/ -v
 
 ### Live Dashboard UI Improvements (186–195)
 | # | Feature | Description |
-|---|---------|-------------|
+|---|---|---------|
 | 186 | **UI-001: 3D floor plan heatmap** | Real-time WebGL temperature overlay per zone |
 | 187 | **UI-002: Draggable zone priority** | User-reorderable zone list by fire risk score |
 | 188 | **UI-003: Historical timeline scrubber** | Replay any incident window with minute resolution |
@@ -345,6 +346,8 @@ PYTHONPATH=src pytest tests/ -v
 | 193 | **UI-008: Sensor sparklines** | Detail popup with 30-minute sparkline graphs per sensor |
 | 194 | **UI-009: Predictive risk meter** | 0-100% fire risk score from sensor fusion + occupancy |
 | 195 | **UI-010: Auto theme switching** | Dark 6PM–6AM, light 6AM–6PM with custom color palettes |
+| 196 | **Professional dark-mode dashboard** | CSS Grid, no overlap, live module health grid, keep-alive ping/pong with 15s timeout auto-reconnect |
+| 197 | **SensorManager** | Unified sensor orchestration with async health-aware polling |
 
 ---
 

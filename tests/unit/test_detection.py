@@ -99,6 +99,8 @@ class TestFireDetection:
     def test_disabled_detection(self) -> None:
         from fire_suppression.config import Config
         cfg = Config()
+        if "detection" not in cfg._data:
+            cfg._data["detection"] = {}
         cfg._data["detection"]["enabled"] = False
         engine = FireDetectionEngine(cfg)
         mq2 = SensorReading("mq2", 0.0, {"smoke_ppm": 9999.0})

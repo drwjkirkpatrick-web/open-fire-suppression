@@ -128,9 +128,13 @@ class TestUSBUpdateAgent:
 
     def test_rollback_no_versions(self, tmp_path) -> None:
         agent = USBUpdateAgent(mock=True, project_root=str(tmp_path))
-        result = asyncio.get_event_loop().run_until_complete(agent.rollback())
-        assert result.success is False
-        assert "No previous versions" in result.rejection_reason
+        loop = asyncio.new_event_loop()
+        try:
+            result = loop.run_until_complete(agent.rollback())
+            assert result.success is False
+            assert "No previous versions" in result.rejection_reason
+        finally:
+            loop.close()
 
     def test_to_dict(self, tmp_path) -> None:
         agent = USBUpdateAgent(mock=True, project_root=str(tmp_path))

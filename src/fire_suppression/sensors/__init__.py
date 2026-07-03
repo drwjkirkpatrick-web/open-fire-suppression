@@ -6,6 +6,7 @@ from fire_suppression.sensors.bme680 import BME680Sensor
 from fire_suppression.sensors.ds18b20 import DS18B20Sensor
 from fire_suppression.sensors.ens160 import ENS160Sensor
 from fire_suppression.sensors.i2c import i2c_device_present, scan_i2c_bus
+from fire_suppression.sensors.manager import SensorManager
 from fire_suppression.sensors.mlx90614 import MLX90614Sensor
 from fire_suppression.sensors.mlx90640 import MLX90640Sensor
 from fire_suppression.sensors.mq2 import MQ2Sensor
@@ -18,6 +19,7 @@ __all__ = [
     "SensorReading",
     "SensorHealth",
     "SensorStatus",
+    "SensorManager",
     "ADS1115Sensor",
     "MQ2Sensor",
     "SHT40Sensor",
@@ -30,5 +32,4 @@ __all__ = [
     "PiCameraSensor",
     "scan_i2c_bus",
     "i2c_device_present",
-    "SensorManager",
 ]
