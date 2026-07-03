@@ -187,7 +187,8 @@ PYTHONPATH=src pytest tests/ -v
 | v0.3.0 (Resilience, Hermes bridge, Additional improvements, NFPA compliance, Kenya SMS, USB export) | 40 |
 | v0.4.0 (20 next-gen modules + 2 audio upgrades + next-gen tech + resilience stay-alive) | 76 |
 | v0.5.0 (Anti-tamper USB update, Pi-optimized blockchain, file integrity monitor) | 33 |
-| **Total** | **310** |
+| v0.6.0 (Audio keep-alive, fault isolation, 200 EN/SW phrases, 10 UI dashboard improvements) | 37 |
+| **Total** | **347** |
 
 ### NFPA 72 & NFPA 10 Regulatory Compliance (80–93)
 | # | Feature | Description |
@@ -304,9 +305,46 @@ PYTHONPATH=src pytest tests/ -v
 | 165 | **Multi-format** | JSON + CSV (machine), HTML (human), PDF (formal), binary (forensic) |
 | 166 | **Date-range filtering** | Export only data from specific incident window |
 | 167 | **USB validation** | Pre-export: space check, writable test, filesystem detection |
-| 168 | **Encryption option** | Password-protected ZIP with AES-256 |
-| 169 | **Integrity verification** | Post-export verify command confirms no corruption |
-| 170 | **Package browsing** | List all exports with metadata |
+|| 168 | **Encryption option** | Password-protected ZIP with AES-256 |
+|| 169 | **Integrity verification** | Post-export verify command confirms no corruption |
+|| 170 | **Package browsing** | List all exports with metadata |
+
+### Audio Keep-Alive & Bilingual Phrases (171–180)
+| # | Feature | Description |
+|---|---------|-------------|
+| 171 | **Audio keep-alive (AUD-003)** | Persistent ALSA thread with sub-100ms alarm latency |
+| 172 | **Priority queue** | FIRE_ALERT > EVACUATION_GUIDANCE > INFO, with interrupt support |
+| 173 | **Phrase cache (AUD-004)** | SQLite-backed in-memory cache — 200 phrases ready for instant TTS |
+| 174 | **English fire alert phrases** | 100 phrases covering detection, suppression, status, all-clear |
+| 175 | **Swahili fire alert phrases** | 100 Swahili translations — bilingual EN/SW alert capability |
+| 176 | **English evacuation guidance** | 100 phrases with room names, directions, accessibility |
+| 177 | **Swahili evacuation guidance** | 100 Swahili translations — room-specific, directional |
+| 178 | **Aconitum Napellus personality** | 🚨 Panic Responder — urgent, direct, authoritative for fire alerts |
+| 179 | **Phosphorus personality** | 🔥 Charismatic Communicator — warm, clear, guiding for evacuation |
+| 180 | **Usage analytics** | Phrase play frequency tracked for cache warming |
+
+### Fault Isolation & Resilience (181–185)
+| # | Feature | Description |
+|---|---------|-------------|
+| 181 | **Module fault isolation (RES-002)** | `@isolated` decorator — any module failure doesn't pause the system |
+| 182 | **Auto-degradation** | 3 failures → module degraded, system continues with remaining modules |
+| 183 | **Auto-recovery** | Degraded modules retry every 5 minutes; manual reset also available |
+| 184 | **Rolling latency tracking** | Per-module average latency for performance monitoring |
+| 185 | **Degradation callbacks** | Register alerts/SMS on module degradation |
+
+### Live Dashboard UI Improvements (186–195)
+| # | Feature | Description |
+|---|---------|-------------|
+| 186 | **UI-001: 3D floor plan heatmap** | Real-time WebGL temperature overlay per zone |
+| 187 | **UI-002: Draggable zone priority** | User-reorderable zone list by fire risk score |
+| 188 | **UI-003: Historical timeline scrubber** | Replay any incident window with minute resolution |
+| 189 | **UI-004: EN/SW language toggle** | Instant dashboard refresh with full Swahili localization |
+| 190 | **UI-005: Accessibility mode** | High contrast, screen reader, keyboard nav, reduced motion |
+| 191 | **UI-006: Mobile responsive** | Split-pane layout adapts to desktop/tablet/mobile |
+| 192 | **UI-007: One-click emergency** | Silence / Evacuate / Test / Reset buttons with confirmation |
+| 193 | **UI-008: Sensor sparklines** | Detail popup with 30-minute sparkline graphs per sensor |
+| 194 | **UI-009: Predictive risk meter** | 0-100% fire risk score from sensor fusion + occupancy |
+| 195 | **UI-010: Auto theme switching** | Dark 6PM–6AM, light 6AM–6PM with custom color palettes |
 
 ---
 
