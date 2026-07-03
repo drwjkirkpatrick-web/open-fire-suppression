@@ -186,7 +186,8 @@ PYTHONPATH=src pytest tests/ -v
 | Original 10 Improvements (TFLite, Kalman, zones, diagnostics, baseline, targeting, audit, notifier, mobile, MQTT) | 55 |
 | v0.3.0 (Resilience, Hermes bridge, Additional improvements, NFPA compliance, Kenya SMS, USB export) | 40 |
 | v0.4.0 (20 next-gen modules + 2 audio upgrades + next-gen tech + resilience stay-alive) | 76 |
-| **Total** | **277** |
+| v0.5.0 (Anti-tamper USB update, Pi-optimized blockchain, file integrity monitor) | 33 |
+| **Total** | **310** |
 
 ### NFPA 72 & NFPA 10 Regulatory Compliance (80–93)
 | # | Feature | Description |
@@ -271,7 +272,43 @@ PYTHONPATH=src pytest tests/ -v
 | 141 | **Clock drift monitor** | NTP confidence decay, RTC backup, daily auto-sync |
 | 142 | **Process watchdog** | 60s heartbeat — auto-restart with exponential backoff |
 
-## Compliance & Safety Notice
+### Anti-Tamper & Cryptographic Security (143–157)
+| # | Feature | Description |
+|---|---------|-------------|
+| 143 | **USB update agent (SEC-001)** | Ed25519-signed firmware updates via USB — atomic staging, 3-version rollback |
+| 144 | **Ed25519 signature verification** | Every update cryptographically verified before install |
+| 145 | **Content hash verification** | Per-file SHA-256 manifest checked before any file is overwritten |
+| 146 | **Device ID binding** | Update packages locked to specific Pi serial number or MAC |
+| 147 | **Version downgrade protection** | Rejects updates older than current installed version |
+| 148 | **Rollback manager** | Automatic backup of last 3 versions with one-command restore |
+| 149 | **File integrity monitor (SEC-002)** | Continuous SHA-256 monitoring of all source files — detects unauthorized mods |
+| 150 | **Real-time tamper alerts** | FIM violations logged to blockchain + optionally SMS/email |
+| 151 | **Baseline management** | Cryptographic baseline recreated after verified authorized changes |
+| 152 | **Blockchain audit log (MOD-010-OPT)** | Append-only binary flat file, 112 bytes/block, ~4MB/year |
+| 153 | **Merkle tree root** | Incremental computation for single-hash chain verification |
+| 154 | **Chain linkage verification** | Every block includes previous block hash — any break detected instantly |
+| 155 | **Mock/disk verification** | `verify_chain()` works in-memory (mock) or reads binary file (production) |
+| 156 | **Blockchain export to USB** | Full `audit.chain` binary + verification JSON for inspector analysis |
+| 157 | **Inspector self-verification** | `./verify.sh` script included in every USB export for field validation |
+
+### USB Export v0.5.0 — Inspector Package (158–170)
+| # | Feature | Description |
+|---|---------|-------------|
+| 158 | **Tamper log export** | All tamper detection events with blockchain proofs |
+| 159 | **Blockchain export** | Binary `audit.chain` + `audit.chaindata` + verification JSON |
+| 160 | **Update history export** | Complete software update log with signatures and rollback info |
+| 161 | **Inspector verification script** | `./verify.sh` — runs hash checks, blockchain validation, tamper scan |
+| 162 | **Inspector README** | `README_INSPECTOR.md` explaining every file and how to verify it |
+| 163 | **Chain of custody** | Package ID, timestamp, SHA-256 manifest, signature, encryption status |
+| 164 | **Legal hold watermark** | All documents stamped "LEGAL HOLD — DO NOT ALTER" |
+| 165 | **Multi-format** | JSON + CSV (machine), HTML (human), PDF (formal), binary (forensic) |
+| 166 | **Date-range filtering** | Export only data from specific incident window |
+| 167 | **USB validation** | Pre-export: space check, writable test, filesystem detection |
+| 168 | **Encryption option** | Password-protected ZIP with AES-256 |
+| 169 | **Integrity verification** | Post-export verify command confirms no corruption |
+| 170 | **Package browsing** | List all exports with metadata |
+
+---
 
 1. **This is not a certified fire alarm system.** It is open-source research software.
 2. **NFPA 72**, **NFPA 10**, and local codes govern real fire suppression installations.
