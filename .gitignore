@@ -1,0 +1,65 @@
+# open-fire-suppression
+# Git ignore patterns
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-specific
+/var/
+data/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+models/
+baselines.json
+*.log
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Secrets (never commit these!)
+config/secrets.yaml
+*.key
+*.pem
+.env
