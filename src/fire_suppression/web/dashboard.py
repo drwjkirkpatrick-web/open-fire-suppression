@@ -11,7 +11,7 @@ import json
 import logging
 import time
 from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
@@ -93,6 +93,138 @@ async def api_events(limit: int = 50, severity: str | None = None) -> list[dict]
         if severity:
             events = [e for e in events if e.get("severity") == severity]
         return events[-limit:]
+
+
+# ── Security (v0.5.0) ────────────────────────────────────────────────────────
+
+@app.get("/api/security/hsm")
+async def api_hsm_status() -> dict[str, Any]:
+    """SEC-002 — Hardware Security Module Bridge status."""
+    from fire_suppression.diagnostics.hsm_bridge import HSMBridge
+
+    try:
+        hsm = HSMBridge(mock=True)
+        return hsm.health_check()
+    except Exception as exc:
+        logger.warning("HSM health check error: %s", exc)
+        return {"feature_id": "SEC-002", "error": str(exc), "healthy": False}
+
+
+@app.get("/api/security/ids")
+async def api_ids_status() -> dict[str, Any]:
+    """SEC-003 — Intrusion Detection System status."""
+    from fire_suppression.diagnostics.intrusion_detection import IntrusionDetectionSystem
+
+    try:
+        ids = IntrusionDetectionSystem(mock=True)
+        return ids.to_dict()
+    except Exception as exc:
+        logger.warning("IDS status error: %s", exc)
+        return {"feature_id": "SEC-003", "error": str(exc), "healthy": False}
+
+
+@app.get("/api/security/vault")
+async def api_vault_status() -> dict[str, Any]:
+    """SEC-004 — Secure Config Vault status."""
+    from fire_suppression.config.secure_vault import SecureConfigVault
+
+    try:
+        vault = SecureConfigVault(mock=True)
+        return vault.to_dict()
+    except Exception as exc:
+        logger.warning("Vault status error: %s", exc)
+        return {"feature_id": "SEC-004", "error": str(exc), "healthy": False}
+
+
+# ── Bottleneck Mitigations ───────────────────────────────────────────────────
+
+@app.get("/api/bottlenecks/engine_timeout")
+async def api_engine_timeout_status() -> dict[str, Any]:
+    """BOT-002 — Detection Engine Timeout status."""
+    from fire_suppression.detection.engine_timeout import EngineTimeout
+
+    try:
+        et = EngineTimeout(mock=True)
+        return et.to_dict()
+    except Exception as exc:
+        return {"feature_id": "BOT-002", "error": str(exc), "healthy": False}
+
+
+@app.get("/api/bottlenecks/db_resilience")
+async def api_db_resilience_status() -> dict[str, Any]:
+    """BOT-003 — SQLite DB Resilience status."""
+    from fire_suppression.telemetry.db_resilience import ResilientDB
+
+    try:
+        db = ResilientDB(mock=True)
+        return db.to_dict()
+    except Exception as exc:
+        return {"feature_id": "BOT-003", "error": str(exc), "healthy": False}
+
+
+@app.get("/api/bottlenecks/memory")
+async def api_memory_status() -> dict[str, Any]:
+    """BOT-004 — Memory Monitor status."""
+    from fire_suppression.diagnostics.memory_monitor import MemoryMonitor
+
+    try:
+        mm = MemoryMonitor(mock=True)
+        return mm.to_dict()
+    except Exception as exc:
+        return {"feature_id": "BOT-004", "error": str(exc), "healthy": False}
+
+
+@app.get("/api/bottlenecks/store_forward")
+async def api_store_forward_status() -> dict[str, Any]:
+    """BOT-005 — Store-and-Forward Queue status."""
+    from fire_suppression.telemetry.store_forward import StoreForwardQueue
+
+    try:
+        sf = StoreForwardQueue(mock=True)
+        return sf.to_dict()
+    except Exception as exc:
+        return {"feature_id": "BOT-005", "error": str(exc), "healthy": False}
+
+
+@app.get("/api/bottlenecks/config_reload")
+async def api_config_reload_status() -> dict[str, Any]:
+    """BOT-007 — Atomic Config Reload status."""
+    from fire_suppression.web.config_atomic_reload import ConfigAtomicReload
+
+    try:
+        # Need a valid config path for init
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as fh:
+            fh.write("system:\\n  name: test\\n")
+            tmp = fh.name
+        ca = ConfigAtomicReload(tmp, mock=True)
+        return ca.to_dict()
+    except Exception as exc:
+        return {"feature_id": "BOT-007", "error": str(exc), "healthy": False}
+
+
+@app.get("/api/bottlenecks/rtc")
+async def api_rtc_status() -> dict[str, Any]:
+    """BOT-009 — RTC/NTP Sync status."""
+    from fire_suppression.diagnostics.rtc_sync import RTCSync
+
+    try:
+        rtc = RTCSync(mock=True)
+        return rtc.to_dict()
+    except Exception as exc:
+        return {"feature_id": "BOT-009", "error": str(exc), "healthy": False}
+
+
+@app.get("/api/bottlenecks/watchdog")
+async def api_watchdog_status() -> dict[str, Any]:
+    """BOT-010 — System Watchdog status."""
+    from fire_suppression.diagnostics.watchdog import Watchdog
+
+    try:
+        wd = Watchdog(mock=True)
+        return wd.to_dict()
+    except Exception as exc:
+        return {"feature_id": "BOT-010", "error": str(exc), "healthy": False}
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
