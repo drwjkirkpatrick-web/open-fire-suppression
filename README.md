@@ -187,7 +187,55 @@ PYTHONPATH=src pytest tests/ -v
 | **Resilience & Stay-Alive** (10 bottlenecks) | +10 |
 | **Hermes Bridge** (humidity, fire, status, error, heartbeat) | +6 |
 | **20 Additional Improvements** (thermal drift, water ingress, flicker, ML FP, voice, LEDs, cloud, maintenance, sprinklers, plume, haptic, AQI, seasonal, mobile API, CO, vibration, night vision, compliance, mesh, incident report) | +39 |
-| **Total** | **161** |
+| **NFPA 72/10 Compliance Engine** | +16 |
+| **Kenya SMS** (Africa's Talking, bilingual EN/SW) | +13 |
+| **USB Legal Export** (tamper-evident, encrypted) | +11 |
+| **Total** | **201** |
+
+### NFPA 72 & NFPA 10 Regulatory Compliance (80–93)
+| # | Feature | Description |
+|---|---------|-------------|
+| 80 | **NFPA 72 rule engine** | 30+ compliance checks: detection spacing, notification, power, monitoring, testing, control |
+| 81 | **NFPA 10 extinguisher compliance** | Monthly/annual/hydrostatic test tracking with specific remediation steps |
+| 82 | **Compliance gap reports** | Auto-generated reports showing exactly what's non-compliant and how to fix it |
+| 83 | **Owner maintenance alerts** | SMS/email alerts to owner when inspections are due, tests are overdue, or equipment needs service |
+| 84 | **Compliance score** | Overall percentage score with breakdown by category (detection, notification, power, etc.) |
+| 85 | **Auto-fixable issues** | Some compliance gaps can be fixed automatically (e.g., enabling low-battery annunciation) |
+| 86 | **Alert acknowledge/resolve** | Owner can acknowledge alerts and mark them resolved when fixed |
+| 87 | **Certified technician flag** | Alerts that require a licensed technician are flagged as such |
+| 88 | **Compliance report export** | PDF/HTML compliance reports for AHJ inspection submission |
+| 89 | **Device test tagging** | Digital equivalent of physical test tags with last test date and technician |
+| 90 | **Sensitivity drift monitoring** | Tracks smoke detector response over time; alerts when approaching out-of-tolerance |
+| 91 | **Walk test mode** | Quiet testing mode that suppresses notification appliances during device testing |
+| 92 | **Annual functional test scheduler** | Reminds and guides through full annual functional test per NFPA 72 |
+| 93 | **Battery discharge test** | Automated 30-minute discharge test with capacity logging |
+
+### Kenya-Optimized SMS (94–101)
+| # | Feature | Description |
+|---|---------|-------------|
+| 94 | **Africa's Talking API** | Direct integration with Africa's Talking for Safaricom, Airtel, Telkom Kenya |
+| 95 | **Phone normalization** | Auto-converts 07..., 01..., 254..., and +254 formats to international standard |
+| 96 | **Bilingual fire alerts** | English and Swahili fire alert templates with evacuation instructions |
+| 97 | **Bilingual maintenance alerts** | English and Swahili maintenance reminders |
+| 98 | **Bilingual status reports** | English and Swahili system status summaries |
+| 99 | **Bulk SMS** | Send to up to 100 recipients per batch (Africa's Talking limit) with rate limiting |
+| 100 | **Delivery tracking** | Per-message delivery status with network identification and failure retry queue |
+| 101 | **Daily rate limit** | CAK-compliant 1,000 SMS/day limit with automatic reset |
+
+### USB Data Export for Legal/Insurance (102–112)
+| # | Feature | Description |
+|---|---------|-------------|
+| 102 | **Tamper-evident export** | SHA-256 manifest for every exported file detects any modification |
+| 103 | **Digital signature** | Manifest signed to verify package integrity and chain of custody |
+| 104 | **Legal hold watermark** | All documents stamped "LEGAL HOLD — DO NOT ALTER" |
+| 105 | **Multi-format export** | JSON, CSV, HTML, and PDF outputs for different inspection needs |
+| 106 | **Date-range export** | Export only data from a specific incident window (e.g., fire night ± 24 hours) |
+| 107 | **Auto-packaging** | All files organized into `logs/`, `audit/`, `config/`, `sensor_data/`, `incident_reports/` |
+| 108 | **USB validation** | Pre-export check: sufficient space, writable filesystem, filesystem type detection |
+| 109 | **Encryption option** | Password-protected ZIP with AES-256 for sensitive data transport |
+| 110 | **Integrity verification** | Post-export verify command confirms no files were corrupted during copy |
+| 111 | **Package listing** | Browse all exported packages on the USB drive with metadata |
+| 112 | **Insurance-ready reports** | Pre-formatted for direct submission to insurance adjusters and fire marshals |
 
 ## Compliance & Safety Notice
 
