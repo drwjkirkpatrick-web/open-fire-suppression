@@ -18,6 +18,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     pass
 
+from fire_suppression.alerts.quiet_hours import QuietHoursScheduler
+from fire_suppression.telemetry.acknowledgment_manager import AcknowledgmentManager
+
 logger = logging.getLogger(__name__)
 
 
@@ -54,6 +57,8 @@ class AlertNotifier:
         sms_config: dict | None = None,
         email_config: dict | None = None,
         webhook_url: str | None = None,
+        quiet_hours: QuietHoursScheduler | None = None,
+        ack_manager: AcknowledgmentManager | None = None,
         *,
         mock: bool = False,
     ) -> None:
@@ -62,6 +67,8 @@ class AlertNotifier:
         self.email_config = email_config or {}
         self.webhook_url = webhook_url
         self.mock = mock
+        self._quiet_hours = quiet_hours or QuietHoursScheduler()
+        self._ack_manager = ack_manager
         self._queue: asyncio.Queue[Notification] = asyncio.Queue()
         self._last_sent: dict[str, float] = {}  # Rate limiting per channel
         self._rate_limit_seconds = 60  # Min seconds between same-level notifications
@@ -84,11 +91,36 @@ class AlertNotifier:
             except asyncio.CancelledError:
                 pass
 
-    def send(self, level: NotificationLevel, title: str, message: str) -> None:
-        """Queue a notification for dispatch."""
+    def send(self, level: NotificationLevel, title: str, message: str, alert_id: str | None = None) -> None:
+        """Queue a notification for dispatch.
+
+        Critical/Alert notifications may require acknowledgment. If an
+        acknowledgment manager is configured, critical/alert messages are
+        registered for escalation when unacknowledged.
+        """
+        # Quiet-hours gate: non-critical messages are held during rest windows.
+        if self._quiet_hours.should_suppress(level.value):
+            logger.info("Quiet-hours suppressed %s notification: %s", level.value, title)
+            return
+
         notif = Notification(level=level, title=title, message=message, timestamp=time.time())
+
+        # Register critical and alert-level notifications for acknowledgment.
+        if self._ack_manager and level in (NotificationLevel.CRITICAL, NotificationLevel.ALERT):
+            self._ack_manager.register_alert(
+                alert_id or f"{title}-{notif.timestamp:.0f}",
+                message,
+                severity=level.value,
+            )
+
         self._queue.put_nowait(notif)
         logger.debug("Notification queued: %s - %s", level.value, title)
+
+    def acknowledge(self, alert_id: str, user: str = "owner") -> bool:
+        """Acknowledge an alert, stopping its escalation."""
+        if self._ack_manager is None:
+            return False
+        return self._ack_manager.acknowledge(alert_id, user=user)
 
     async def _dispatch_loop(self) -> None:
         """Process notification queue continuously."""

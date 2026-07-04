@@ -1,7 +1,7 @@
 # open-fire-suppression
 
 <p align="center">
-  <strong>v0.8.0</strong> · Multi-sensor fire detection & suppression for Raspberry Pi 5
+  <strong>v0.9.0</strong> · Multi-sensor fire detection & suppression for Raspberry Pi 5
 </p>
 
 An open-source fire detection and suppression control system running on Raspberry Pi 5 (8GB RAM).
@@ -204,9 +204,9 @@ PYTHONPATH=src pytest tests/ -v
 | v0.5.0 (Anti-tamper USB update, Pi-optimized blockchain, file integrity monitor) | 33 |
 | v0.6.0 (Audio keep-alive, fault isolation, 200 EN/SW phrases, 10 UI dashboard improvements) | 37 |
 | v0.6.1 SensorManager + dashboard keep-alive fixes | 35 |
-| v0.8.0 (AI prioritizer, multi-building console, self-test scheduler, fire-marshal handoff, cloud feed, voice commands, battery balancer, drift calibration, risk map, regulatory manifest) | 57 |
-| **Total** | **544+** |
-
+|| v0.8.0 (AI prioritizer, multi-building console, self-test scheduler, fire-marshal handoff, cloud feed, voice commands, battery balancer, drift calibration, risk map, regulatory manifest) | 57 |
+|| v0.9.0 (Daily digest, ack-required alerts, quiet hours, drift widget, self-test wizard, incident export, voice personalities, battery forecast, geo zones, health-check API) | 67 |
+|| **Total** | **611+** |
 ### NFPA 72 & NFPA 10 Regulatory Compliance (80–93)
 | # | Feature | Description |
 |---|---------|-------------|
@@ -367,7 +367,7 @@ PYTHONPATH=src pytest tests/ -v
 
 ### v0.8.0 — Operational Intelligence & AHJ Readiness (198–207)
 | # | Feature | Description |
-|---|---|---------|
+|---|---------|-------------|
 | 198 | **AI alert prioritizer (V7-001)** | Occupancy + time-of-day + repeat-decay scoring; critical alerts cut through fatigue |
 | 199 | **Multi-building command console (V7-002)** | Single dashboard commands multiple units/buildings with timeout-aware online status |
 | 200 | **Self-test scheduler (V7-003)** | Daily/weekly/monthly/annual NFPA 72 self-tests with auto reports |
@@ -378,6 +378,20 @@ PYTHONPATH=src pytest tests/ -v
 | 205 | **Sensor drift auto-calibration (V7-008)** | Learns baselines, applies offsets, flags sensors needing maintenance |
 | 206 | **Occupancy-aware risk map (V7-009)** | Per-zone real-time risk score drives LED evacuation routing |
 | 207 | **Regulatory firmware manifest (V7-010)** | Maps features to source files + hashes for AHJ audit and version deltas |
+
+### v0.9.0 — Operator Quality-of-Life & Remedy Personalities (208–217)
+| # | Feature | Description |
+|---|---------|-------------|
+| 208 | **Daily digest (V9-001)** | Morning summary of uptime, alerts, battery, tests, top remediation — *Arsenicum Album* |
+| 209 | **Ack-required alerts (V9-002)** | Critical alerts must be acknowledged; escalate via SMS/voice if ignored — *Aconitum Napellus* |
+| 210 | **Quiet hours scheduler (V9-003)** | Non-critical notifications suppressed during rest windows — *Bryonia Alba* |
+| 211 | **Sensor drift widget (V9-004)** | Dashboard shows per-sensor baseline, drift ratio, and calibration status — *Graphites* |
+| 212 | **Self-test wizard (V9-005)** | Guided owner-safe NFPA self-test with step-by-step report — *Pulsatilla Pratensis* |
+| 213 | **Incident snapshot export (V9-006)** | One-click ZIP of recent sensor/event/audit data for fire marshal/insurance — *Phosphorus* |
+| 214 | **Voice personality registry (V9-007)** | Select remedy personality for fire alerts and evacuation guidance — *Ignatia Amara* |
+| 215 | **Battery forecast (V9-008)** | Minutes-to-empty and time-to-critical from recent discharge trend — *Lycopodium Clavatum* |
+| 216 | **Geo-tagged zones (V9-009)** | GPS coordinates per zone with distance/bearing for situational feed — *Calcarea Carbonica* |
+| 217 | **System health-check API/CLI (V9-010)** | Green/yellow/red summary plus the first remediation step — *Silicea Terra* |
 
 ---
 

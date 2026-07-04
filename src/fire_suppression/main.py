@@ -66,7 +66,7 @@ class FireSuppressionSystem:
         # I001 — System Startup Sequence
         """
         logger.info("=" * 50)
-        logger.info("open-fire-suppression v%s starting...", "0.8.0")
+        logger.info("open-fire-suppression v%s starting...", "0.9.0")
         logger.info("Mock mode: %s", self.config.mock_hardware)
         logger.info("=" * 50)
 

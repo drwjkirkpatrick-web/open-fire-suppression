@@ -15,10 +15,12 @@ import logging
 import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
+
+from fire_suppression.alerts.voice_personality import VoicePersonalityRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -47,10 +49,11 @@ class VoiceAlertSystem:
                          priority=VoicePriority.CRITICAL)
     """
 
-    def __init__(self, rate: int = 150, volume: float = 1.0, *, mock: bool = False) -> None:
+    def __init__(self, rate: int = 150, volume: float = 1.0, *, mock: bool = False, personality: VoicePersonalityRegistry | None = None) -> None:
         self.rate = rate
         self.volume = volume
         self.mock = mock
+        self.personality = personality or VoicePersonalityRegistry()
         self._queue: asyncio.Queue[VoiceMessage] = asyncio.Queue()
         self._speaking = False
         self._running = False
@@ -113,13 +116,21 @@ class VoiceAlertSystem:
             self._engine.say(text)
             self._engine.runAndWait()
 
-    def is_speaking(self) -> bool:
-        return self._speaking
+    async def speak_alert(self, message: str, priority: VoicePriority = VoicePriority.CRITICAL, language: str = "en") -> None:
+        """Queue a fire alert using the configured alert personality."""
+        text = self.personality.render_alert(message, language=language)
+        await self.speak(text, priority=priority)
 
-    def stop_current(self) -> None:
-        """Interrupt current speech (for emergency override)."""
-        if self._engine:
-            try:
-                self._engine.stop()
-            except Exception:
-                pass
+    async def speak_evacuation(self, message: str, priority: VoicePriority = VoicePriority.HIGH, language: str = "en") -> None:
+        """Queue evacuation guidance using the configured evacuation personality."""
+        text = self.personality.render_evacuation(message, language=language)
+        await self.speak(text, priority=priority)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "mock": self.mock,
+            "rate": self.rate,
+            "volume": self.volume,
+            "speaking": self._speaking,
+            "personalities": self.personality.to_dict(),
+        }

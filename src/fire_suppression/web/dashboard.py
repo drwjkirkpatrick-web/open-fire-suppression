@@ -15,12 +15,25 @@ from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING, Any
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 
+from fire_suppression.alerts.quiet_hours import QuietHoursScheduler
+from fire_suppression.alerts.voice_personality import VoicePersonalityRegistry
+from fire_suppression.detection.geo_zones import GeoZoneManager
+from fire_suppression.diagnostics.self_test_scheduler import SelfTestScheduler
+from fire_suppression.diagnostics.system_health_check import SystemHealthCheck
+from fire_suppression.power.battery_forecaster import BatteryForecaster
+from fire_suppression.power.manager import PowerManager
+from fire_suppression.sensors.drift_widget import SensorDriftWidget
+from fire_suppression.telemetry.acknowledgment_manager import AcknowledgmentManager
+from fire_suppression.telemetry.daily_digest import DailyDigestGenerator
+from fire_suppression.telemetry.incident_snapshot import IncidentSnapshotExporter
+from fire_suppression.telemetry.logger import TelemetryLogger
 from fire_suppression.web.dashboard_ui import DashboardUI, SystemHealth, ZoneStatus
+from fire_suppression.web.self_test_wizard import SelfTestWizard
 
 if TYPE_CHECKING:
-    from fire_suppression.telemetry.logger import TelemetryLogger
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +46,18 @@ _status_cache: dict = {
     "timestamp": time.time(),
 }
 _status_lock = asyncio.Lock()
+
+# v0.9.0 subsystem singletons used by dashboard endpoints
+_daily_digest = DailyDigestGenerator()
+_ack_manager = AcknowledgmentManager()
+_quiet_hours = QuietHoursScheduler()
+_drift_widget = SensorDriftWidget()
+_test_wizard = SelfTestWizard(SelfTestScheduler())
+_voice_personality = VoicePersonalityRegistry()
+_battery_forecaster: BatteryForecaster | None = None
+_geo_zones = GeoZoneManager()
+_incident_exporter = IncidentSnapshotExporter()
+_system_health = SystemHealthCheck(ack_manager=_ack_manager)
 
 
 async def update_status_cache(status: dict) -> None:
@@ -63,7 +88,7 @@ _dashboard_ui = DashboardUI(mock=True)
 
 @app.get("/")
 async def root() -> dict:
-    return {"message": "open-fire-suppression API", "version": "0.8.0"}
+    return {"message": "open-fire-suppression API", "version": "0.9.0"}
 
 
 @app.get("/api/status")
@@ -216,6 +241,146 @@ async def api_modules() -> dict[str, Any]:
     _try_module(modules, "regulatory_manifest", "fire_suppression.diagnostics.regulatory_manifest", "RegulatoryFirmwareManifest")
 
     return {"modules": modules, "timestamp": time.time()}
+
+
+# ── v0.9.0 Quality-of-Life Endpoints ──
+
+@app.get("/api/digest")
+async def api_digest(period_hours: int = 24, language: str = "en") -> dict[str, Any]:
+    """V9-001 — Smart Daily Digest (Arsenicum Album)."""
+    return _daily_digest.to_dict(period_hours=period_hours, language=language)
+
+
+@app.get("/api/acknowledge")
+async def api_acknowledge_status() -> dict[str, Any]:
+    """V9-002 — Pending critical alerts awaiting acknowledgment (Aconitum Napellus)."""
+    return _ack_manager.to_dict()
+
+
+@app.post("/api/acknowledge")
+async def api_acknowledge_alert(payload: dict) -> dict[str, Any]:
+    """Acknowledge a critical alert and stop escalation."""
+    alert_id = payload.get("alert_id", "")
+    user = payload.get("user", "owner")
+    ok = _ack_manager.acknowledge(alert_id, user=user)
+    return {"acknowledged": ok, "alert_id": alert_id, "user": user}
+
+
+@app.get("/api/quiet-hours")
+async def api_quiet_hours() -> dict[str, Any]:
+    """V9-003 — Quiet Hours / Do-Not-Disturb (Bryonia Alba)."""
+    return _quiet_hours.to_dict()
+
+
+@app.get("/api/drift")
+async def api_drift() -> dict[str, Any]:
+    """V9-004 — Sensor Drift Widget (Graphites)."""
+    return _drift_widget.to_dict()
+
+
+@app.get("/api/self-test")
+async def api_self_test() -> dict[str, Any]:
+    """V9-005 — Self-Test Wizard steps (Pulsatilla Pratensis)."""
+    return _test_wizard.to_dict()
+
+
+@app.post("/api/self-test")
+async def api_self_test_run() -> dict[str, Any]:
+    """Run the guided self-test wizard and return the report."""
+    return await _test_wizard.run_all()
+
+
+@app.get("/test", response_class=HTMLResponse)
+async def self_test_page() -> str:
+    """Simple standalone self-test page."""
+    return """<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Self-Test Wizard</title></head>
+<body style="font-family:system-ui;padding:20px;max-width:800px;margin:auto">
+  <h1>Self-Test Wizard (v0.9.0)</h1>
+  <p>Personality: Pulsatilla Pratensis — gentle, guided, owner-safe.</p>
+  <button id="run" style="padding:10px 16px;font-size:1rem;cursor:pointer">Run Guided Test</button>
+  <pre id="out" style="background:#f4f4f4;padding:12px;border-radius:6px;white-space:pre-wrap">Click Run Guided Test to begin...</pre>
+  <script>
+    document.getElementById('run').addEventListener('click', async () => {
+      const out = document.getElementById('out');
+      out.textContent = 'Running...';
+      const res = await fetch('/api/self-test', {method:'POST'});
+      const data = await res.json();
+      out.textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>"""
+
+
+@app.get("/api/voice-personality")
+async def api_voice_personality() -> dict[str, Any]:
+    """V9-007 — Voice alert/evacuation personality selection (Ignatia Amara)."""
+    return _voice_personality.to_dict()
+
+
+@app.post("/api/voice-personality")
+async def api_voice_personality_set(payload: dict) -> dict[str, Any]:
+    """Set alert and/or evacuation voice personality."""
+    if "alert" in payload:
+        _voice_personality.set_alert_personality(payload["alert"])
+    if "evacuation" in payload:
+        _voice_personality.set_evacuation_personality(payload["evacuation"])
+    return _voice_personality.to_dict()
+
+
+@app.get("/api/battery-forecast")
+async def api_battery_forecast() -> dict[str, Any]:
+    """V9-008 — Battery runtime forecast (Lycopodium Clavatum)."""
+    global _battery_forecaster
+    if _battery_forecaster is None:
+        _battery_forecaster = BatteryForecaster(PowerManager())
+    forecast = await _battery_forecaster.update()
+    return {
+        "personality": BatteryForecaster.PERSONALITY,
+        "battery_percent": forecast.battery_percent,
+        "source": forecast.source,
+        "minutes_to_empty": forecast.minutes_to_empty,
+        "minutes_to_critical": forecast.minutes_to_critical,
+        "trend": forecast.trend,
+        "confidence": forecast.confidence,
+        "sample_count": forecast.sample_count,
+    }
+
+
+@app.get("/api/zones/geo")
+async def api_zones_geo(reference_zone_id: str | None = None) -> dict[str, Any]:
+    """V9-009 — Geo-tagged zones with distance/bearing (Calcarea Carbonica)."""
+    return _geo_zones.situational_feed(reference_zone_id=reference_zone_id)
+
+
+@app.get("/api/health-check")
+async def api_health_check() -> dict[str, Any]:
+    """V9-010 — Concise green/yellow/red system health with remediation (Silicea Terra)."""
+    result = await _system_health.check()
+    return {
+        "status": result.status,
+        "timestamp": result.timestamp,
+        "personality": result.personality,
+        "first_remediation": result.first_remediation,
+        "checks": result.checks,
+    }
+
+
+@app.get("/api/incident-export")
+async def api_incident_export(minutes: int = 15) -> StreamingResponse:
+    """V9-006 — Download a ZIP snapshot of the last N minutes (Phosphorus)."""
+    package = await _incident_exporter.export(minutes=minutes)
+    return StreamingResponse(
+        iter([package.zip_bytes]),
+        media_type="application/zip",
+        headers={
+            "Content-Disposition": f"attachment; filename={package.package_id}.zip",
+            "X-Snapshot-SHA256": package.sha256,
+        },
+    )
 
 
 def _try_module(modules: dict, key: str, module_path: str, class_name: str) -> None:
@@ -816,7 +981,7 @@ body.light .resource-bar { background: #e2e8f0; }
   </div>
 </div>
 <header>
-  <h1>open-fire-suppression <span class="badge">v0.8.0</span></h1>
+  <h1>open-fire-suppression <span class="badge">v0.9.0</span></h1>
   <div class="controls">
     <button id="btn-evacuate" class="crit">Evacuate</button>
     <button id="btn-test">Test</button>
@@ -899,7 +1064,7 @@ body.light .resource-bar { background: #e2e8f0; }
 </main>
 <footer>
   <div id="last-update">Updated: —</div>
-  <div>open-fire-suppression · Dashboard UI v0.8.0</div>
+  <div>open-fire-suppression · Dashboard UI v0.9.0</div>
 </footer>
 <script>
 (function () {
