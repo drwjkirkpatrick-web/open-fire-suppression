@@ -14,7 +14,7 @@ def manifest(monkeypatch):
 def test_build_manifest(manifest):
     m = manifest.build_manifest()
     assert m["feature_id"] == "V7-010"
-    assert m["version"] == "0.7.0"
+    assert m["version"] == "0.8.0"
     assert 0 <= m["coverage"] <= 1
     assert m["manifest_hash"]
 

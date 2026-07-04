@@ -1,35 +1,31 @@
 # open-fire-suppression
 
 <p align="center">
-  🔥 🛡️ 📡 🔔 ⚡ 🌍 ♿ 🔐 📊 🧪
-</p>
-
-<p align="center">
-  <strong>v0.7.0</strong> · Multi-sensor fire detection & suppression for Raspberry Pi 5
+  <strong>v0.8.0</strong> · Multi-sensor fire detection & suppression for Raspberry Pi 5
 </p>
 
 An open-source fire detection and suppression control system running on Raspberry Pi 5 (8GB RAM).
 
-> ⚠️ **USE AT YOUR OWN RISK.** This software is provided as-is for educational and research purposes. Any deployment in a real-world fire protection scenario requires professional engineering review, installation by certified technicians, and sign-off by your local Authority Having Jurisdiction (AHJ).
+>  **USE AT YOUR OWN RISK.** This software is provided as-is for educational and research purposes. Any deployment in a real-world fire protection scenario requires professional engineering review, installation by certified technicians, and sign-off by your local Authority Having Jurisdiction (AHJ).
 >
-> 🏛️ **REGULATORY COMPLIANCE:** Before activating suppression hardware, your system must pass inspection by a licensed fire protection engineer and obtain module installation certification from the appropriate local or national fire safety authority. Failure to do so may violate fire codes, invalidate insurance coverage, and create serious life safety hazards.
+> **REGULATORY COMPLIANCE:** Before activating suppression hardware, your system must pass inspection by a licensed fire protection engineer and obtain module installation certification from the appropriate local or national fire safety authority. Failure to do so may violate fire codes, invalidate insurance coverage, and create serious life safety hazards.
 
 ---
 
 ## Overview
 
-| Icon | Domain | Highlights |
-|------|--------|------------|
-| 🔥 | Detection | 10+ sensors, TFLite, Kalman, flicker analysis, thermal hotspot |
-| 🛡️ | Safety | Arming, E-stop, tamper detection, watchdog, graceful degradation |
-| 📡 | Connectivity | WiFi, cellular SMS, MQTT, mesh, public situational feed |
-| 🔔 | Alerts | Bilingual EN/SW TTS, SMS, buzzer, haptic, LED routing |
-| ⚡ | Power | UPS monitoring, smart load balancing, safe shutdown |
-| 🌍 | Multi-site | Multi-building command console, satellite wildfire feed |
-| ♿ | Accessibility | Voice commands, screen-reader UI, high-contrast mode |
-| 🔐 | Security | Ed25519 USB updates, blockchain audit, file integrity monitor |
-| 📊 | Compliance | NFPA 72/10 rule engine, self-test scheduler, regulatory manifest |
-| 🧪 | Reliability | 534+ tests, mock-first, fault isolation, auto-calibration |
+| Domain | Highlights |
+|------|------------|
+| Detection | 10+ sensors, TFLite, Kalman, flicker analysis, thermal hotspot |
+| Safety | Arming, E-stop, tamper detection, watchdog, graceful degradation |
+| Connectivity | WiFi, cellular SMS, MQTT, mesh, public situational feed |
+| Alerts | Bilingual EN/SW TTS, SMS, buzzer, haptic, LED routing |
+| Power | UPS monitoring, smart load balancing, safe shutdown |
+|  | Multi-site | Multi-building command console, satellite wildfire feed |
+| Accessibility | Voice commands, screen-reader UI, high-contrast mode |
+| Security | Ed25519 USB updates, blockchain audit, file integrity monitor |
+| Compliance | NFPA 72/10 rule engine, self-test scheduler, regulatory manifest |
+| Reliability | 544+ tests, mock-first, fault isolation, auto-calibration |
 
 ## Complete Feature List
 
@@ -157,23 +153,23 @@ An open-source fire detection and suppression control system running on Raspberr
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Sensor Layer    │  MQ-2 │ SHT40 │ MLX90614 │ AMG8833 │ ... │
-├─────────────────────────────────────────────────────────────┤
-│  Detection Engine│  Sensor Fusion → Kalman → TFLite → Flicker│
-├─────────────────────────────────────────────────────────────┤
-│  Safety Layer    │  Interlocks │ Arming │ Watchdog │ E-Stop  │
-├─────────────────────────────────────────────────────────────┤
-│  Actuation Layer │  Relay │ Sprinkler │ Mist Targeting │ LED  │
-├─────────────────────────────────────────────────────────────┤
-│  Alert Layer     │  Buzzer │ TTS │ SMS │ Email │ MQTT │ BLE  │
-├─────────────────────────────────────────────────────────────┤
-│  Telemetry       │  SQLite │ Audit │ Cloud │ AQI │ Dashboard│
-├─────────────────────────────────────────────────────────────┤
-│  Resilience      │  Stay-Alive │ Mesh │ Compliance │ Maintain│
-├─────────────────────────────────────────────────────────────┤
-│  Power           │  UPS │ Battery │ Safe Shutdown │ RTC      │
-└─────────────────────────────────────────────────────────────┘
+
+  Sensor Layer      MQ-2  SHT40  MLX90614  AMG8833  ... 
+
+  Detection Engine  Sensor Fusion → Kalman → TFLite → Flicker
+
+  Safety Layer      Interlocks  Arming  Watchdog  E-Stop  
+
+  Actuation Layer   Relay  Sprinkler  Mist Targeting  LED  
+
+  Alert Layer       Buzzer  TTS  SMS  Email  MQTT  BLE  
+
+  Telemetry         SQLite  Audit  Cloud  AQI  Dashboard
+
+  Resilience        Stay-Alive  Mesh  Compliance  Maintain
+
+  Power             UPS  Battery  Safe Shutdown  RTC      
+
 ```
 
 ## Hardware Requirements
@@ -193,7 +189,7 @@ pip install -r requirements.txt
 
 ## Running Tests
 
-All **534 tests pass**. Run the full suite:
+All **544+ tests pass**. Run the full suite:
 
 ```bash
 PYTHONPATH=src pytest tests/ -v
@@ -208,8 +204,8 @@ PYTHONPATH=src pytest tests/ -v
 | v0.5.0 (Anti-tamper USB update, Pi-optimized blockchain, file integrity monitor) | 33 |
 | v0.6.0 (Audio keep-alive, fault isolation, 200 EN/SW phrases, 10 UI dashboard improvements) | 37 |
 | v0.6.1 SensorManager + dashboard keep-alive fixes | 35 |
-| v0.7.0 (AI prioritizer, multi-building console, self-test scheduler, fire-marshal handoff, cloud feed, voice commands, battery balancer, drift calibration, risk map, regulatory manifest) | 57 |
-| **Total** | **534** |
+| v0.8.0 (AI prioritizer, multi-building console, self-test scheduler, fire-marshal handoff, cloud feed, voice commands, battery balancer, drift calibration, risk map, regulatory manifest) | 57 |
+| **Total** | **544+** |
 
 ### NFPA 72 & NFPA 10 Regulatory Compliance (80–93)
 | # | Feature | Description |
@@ -253,8 +249,8 @@ PYTHONPATH=src pytest tests/ -v
 | 108 | **USB validation** | Pre-export check: sufficient space, writable filesystem, filesystem type detection |
 | 109 | **Encryption option** | Password-protected ZIP with AES-256 for sensitive data transport |
 | 110 | **Integrity verification** | Post-export verify command confirms no files were corrupted during copy |
-|| 111 | **Package listing** | Browse all exported packages on the USB drive with metadata |
-|| 112 | **Insurance-ready reports** | Pre-formatted for direct submission to insurance adjusters and fire marshals |
+| 111 | **Package listing** | Browse all exported packages on the USB drive with metadata |
+| 112 | **Insurance-ready reports** | Pre-formatted for direct submission to insurance adjusters and fire marshals |
 
 ### v0.4.0 — Next-Generation Detection & Audio (113–132)
 | # | Feature | Description |
@@ -326,9 +322,9 @@ PYTHONPATH=src pytest tests/ -v
 | 165 | **Multi-format** | JSON + CSV (machine), HTML (human), PDF (formal), binary (forensic) |
 | 166 | **Date-range filtering** | Export only data from specific incident window |
 | 167 | **USB validation** | Pre-export: space check, writable test, filesystem detection |
-|| 168 | **Encryption option** | Password-protected ZIP with AES-256 |
-|| 169 | **Integrity verification** | Post-export verify command confirms no corruption |
-|| 170 | **Package browsing** | List all exports with metadata |
+| 168 | **Encryption option** | Password-protected ZIP with AES-256 |
+| 169 | **Integrity verification** | Post-export verify command confirms no corruption |
+| 170 | **Package browsing** | List all exports with metadata |
 
 ### Audio Keep-Alive & Bilingual Phrases (171–180)
 | # | Feature | Description |
@@ -340,8 +336,8 @@ PYTHONPATH=src pytest tests/ -v
 | 175 | **Swahili fire alert phrases** | 100 Swahili translations — bilingual EN/SW alert capability |
 | 176 | **English evacuation guidance** | 100 phrases with room names, directions, accessibility |
 | 177 | **Swahili evacuation guidance** | 100 Swahili translations — room-specific, directional |
-| 178 | **Aconitum Napellus personality** | 🚨 Panic Responder — urgent, direct, authoritative for fire alerts |
-| 179 | **Phosphorus personality** | 🔥 Charismatic Communicator — warm, clear, guiding for evacuation |
+| 178 | **Aconitum Napellus personality** |  Panic Responder — urgent, direct, authoritative for fire alerts |
+| 179 | **Phosphorus personality** |  Charismatic Communicator — warm, clear, guiding for evacuation |
 | 180 | **Usage analytics** | Phrase play frequency tracked for cache warming |
 
 ### Fault Isolation & Resilience (181–185)
@@ -369,7 +365,7 @@ PYTHONPATH=src pytest tests/ -v
 | 196 | **Professional dark-mode dashboard** | CSS Grid, no overlap, live module health grid, keep-alive ping/pong with 15s timeout auto-reconnect |
 | 197 | **SensorManager** | Unified sensor orchestration with async health-aware polling |
 
-### v0.7.0 — Operational Intelligence & AHJ Readiness (198–207)
+### v0.8.0 — Operational Intelligence & AHJ Readiness (198–207)
 | # | Feature | Description |
 |---|---|---------|
 | 198 | **AI alert prioritizer (V7-001)** | Occupancy + time-of-day + repeat-decay scoring; critical alerts cut through fatigue |

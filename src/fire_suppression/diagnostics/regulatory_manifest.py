@@ -60,7 +60,7 @@ class RegulatoryFirmwareManifest:
         manifest = {
             "feature_id": "V7-010",
             "generated_at": time.time(),
-            "version": "0.7.0",
+            "version": "0.8.0",
             "entries": entries,
             "coverage": sum(1 for e in entries if e["verified"]) / len(entries),
         }
