@@ -1,5 +1,13 @@
 # open-fire-suppression
 
+<p align="center">
+  🔥 🛡️ 📡 🔔 ⚡ 🌍 ♿ 🔐 📊 🧪
+</p>
+
+<p align="center">
+  <strong>v0.7.0</strong> · Multi-sensor fire detection & suppression for Raspberry Pi 5
+</p>
+
 An open-source fire detection and suppression control system running on Raspberry Pi 5 (8GB RAM).
 
 > ⚠️ **USE AT YOUR OWN RISK.** This software is provided as-is for educational and research purposes. Any deployment in a real-world fire protection scenario requires professional engineering review, installation by certified technicians, and sign-off by your local Authority Having Jurisdiction (AHJ).
@@ -10,7 +18,18 @@ An open-source fire detection and suppression control system running on Raspberr
 
 ## Overview
 
-**open-fire-suppression** is the most comprehensive open-source fire detection and suppression control system available. It combines multi-sensor fusion, AI-powered video fire detection, thermal imaging, safety interlocks, adaptive learning, and regulatory compliance tools into a single hardened platform.
+| Icon | Domain | Highlights |
+|------|--------|------------|
+| 🔥 | Detection | 10+ sensors, TFLite, Kalman, flicker analysis, thermal hotspot |
+| 🛡️ | Safety | Arming, E-stop, tamper detection, watchdog, graceful degradation |
+| 📡 | Connectivity | WiFi, cellular SMS, MQTT, mesh, public situational feed |
+| 🔔 | Alerts | Bilingual EN/SW TTS, SMS, buzzer, haptic, LED routing |
+| ⚡ | Power | UPS monitoring, smart load balancing, safe shutdown |
+| 🌍 | Multi-site | Multi-building command console, satellite wildfire feed |
+| ♿ | Accessibility | Voice commands, screen-reader UI, high-contrast mode |
+| 🔐 | Security | Ed25519 USB updates, blockchain audit, file integrity monitor |
+| 📊 | Compliance | NFPA 72/10 rule engine, self-test scheduler, regulatory manifest |
+| 🧪 | Reliability | 534+ tests, mock-first, fault isolation, auto-calibration |
 
 ## Complete Feature List
 
@@ -174,7 +193,7 @@ pip install -r requirements.txt
 
 ## Running Tests
 
-All **477 tests pass**. Run the full suite:
+All **534 tests pass**. Run the full suite:
 
 ```bash
 PYTHONPATH=src pytest tests/ -v
@@ -188,8 +207,9 @@ PYTHONPATH=src pytest tests/ -v
 | v0.4.0 (20 next-gen modules + 2 audio upgrades + next-gen tech + resilience stay-alive) | 76 |
 | v0.5.0 (Anti-tamper USB update, Pi-optimized blockchain, file integrity monitor) | 33 |
 | v0.6.0 (Audio keep-alive, fault isolation, 200 EN/SW phrases, 10 UI dashboard improvements) | 37 |
-| SensorManager + dashboard keep-alive fixes | 35 |
-| **Total** | **477** |
+| v0.6.1 SensorManager + dashboard keep-alive fixes | 35 |
+| v0.7.0 (AI prioritizer, multi-building console, self-test scheduler, fire-marshal handoff, cloud feed, voice commands, battery balancer, drift calibration, risk map, regulatory manifest) | 57 |
+| **Total** | **534** |
 
 ### NFPA 72 & NFPA 10 Regulatory Compliance (80–93)
 | # | Feature | Description |
@@ -348,6 +368,20 @@ PYTHONPATH=src pytest tests/ -v
 | 195 | **UI-010: Auto theme switching** | Dark 6PM–6AM, light 6AM–6PM with custom color palettes |
 | 196 | **Professional dark-mode dashboard** | CSS Grid, no overlap, live module health grid, keep-alive ping/pong with 15s timeout auto-reconnect |
 | 197 | **SensorManager** | Unified sensor orchestration with async health-aware polling |
+
+### v0.7.0 — Operational Intelligence & AHJ Readiness (198–207)
+| # | Feature | Description |
+|---|---|---------|
+| 198 | **AI alert prioritizer (V7-001)** | Occupancy + time-of-day + repeat-decay scoring; critical alerts cut through fatigue |
+| 199 | **Multi-building command console (V7-002)** | Single dashboard commands multiple units/buildings with timeout-aware online status |
+| 200 | **Self-test scheduler (V7-003)** | Daily/weekly/monthly/annual NFPA 72 self-tests with auto reports |
+| 201 | **Fire marshal digital handoff (V7-004)** | Tamper-evident QR/URL incident brief for first responders and AHJ |
+| 202 | **Cloud situational awareness feed (V7-005)** | Public, rate-limited JSON/WebSocket feed for EOC dashboards |
+| 203 | **Voice command interface (V7-006)** | Offline wake-word + EN/SW commands: status, test, arm, evacuate, all clear |
+| 204 | **Smart battery load balancer (V7-007)** | Runtime estimation under fire-load; actuator prioritization as battery declines |
+| 205 | **Sensor drift auto-calibration (V7-008)** | Learns baselines, applies offsets, flags sensors needing maintenance |
+| 206 | **Occupancy-aware risk map (V7-009)** | Per-zone real-time risk score drives LED evacuation routing |
+| 207 | **Regulatory firmware manifest (V7-010)** | Maps features to source files + hashes for AHJ audit and version deltas |
 
 ---
 

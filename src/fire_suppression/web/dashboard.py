@@ -60,7 +60,7 @@ _clients: list[WebSocket] = []
 
 @app.get("/")
 async def root() -> dict:
-    return {"message": "open-fire-suppression API", "version": "0.6.1"}
+    return {"message": "open-fire-suppression API", "version": "0.7.0"}
 
 
 @app.get("/api/status")
@@ -199,6 +199,18 @@ async def api_modules() -> dict[str, Any]:
 
     # Hermes bridge
     _try_module(modules, "hermes_bridge", "fire_suppression.bridge.hermes_bridge", "HermesBridge")
+
+    # v0.7.0 modules
+    _try_module(modules, "alert_prioritizer", "fire_suppression.alerts.alert_prioritizer", "AlertPrioritizer")
+    _try_module(modules, "multi_building_console", "fire_suppression.web.multi_building_console", "MultiBuildingConsole")
+    _try_module(modules, "self_test_scheduler", "fire_suppression.diagnostics.self_test_scheduler", "SelfTestScheduler")
+    _try_module(modules, "fire_marshal_handoff", "fire_suppression.telemetry.fire_marshal_handoff", "FireMarshalHandoff")
+    _try_module(modules, "cloud_sitfeed", "fire_suppression.telemetry.cloud_sitfeed", "CloudSituationalAwarenessFeed")
+    _try_module(modules, "voice_command", "fire_suppression.alerts.voice_command_interface", "VoiceCommandInterface")
+    _try_module(modules, "battery_balancer", "fire_suppression.power.battery_balancer", "SmartBatteryLoadBalancer")
+    _try_module(modules, "drift_calibration", "fire_suppression.sensors.drift_calibration", "SensorDriftAutoCalibration")
+    _try_module(modules, "occupancy_risk_map", "fire_suppression.detection.occupancy_risk_map", "OccupancyAwareRiskMap")
+    _try_module(modules, "regulatory_manifest", "fire_suppression.diagnostics.regulatory_manifest", "RegulatoryFirmwareManifest")
 
     return {"modules": modules, "timestamp": time.time()}
 
@@ -526,7 +538,7 @@ button.primary { background: var(--accent); color: #0b0f19; border-color: var(--
 </head>
 <body>
 <header>
-  <h1>🔥 open-fire-suppression <span class="badge">v0.6.1</span></h1>
+  <h1>🔥 open-fire-suppression <span class="badge">v0.7.0</span></h1>
   <div class="controls">
     <button id="lang-btn" title="EN / SW">EN</button>
     <span id="conn-status" class="offline">● disconnected</span>
@@ -615,7 +627,7 @@ button.primary { background: var(--accent); color: #0b0f19; border-color: var(--
 </main>
 <footer>
   <div id="last-update">Updated: —</div>
-  <div>open-fire-suppression · Dashboard UI v0.6.1</div>
+  <div>open-fire-suppression · Dashboard UI v0.7.0</div>
 </footer>
 <script>
 (function () {
