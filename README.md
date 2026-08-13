@@ -395,6 +395,26 @@ PYTHONPATH=src pytest tests/ -v
 
 ---
 
+## ESP32 Firmware Port
+
+The `firmware/esp32/` directory contains a lightweight ESP32 sensor node port of the core detection, safety, actuation, and telemetry subsystems. Built with PlatformIO + Arduino framework.
+
+| Feature | ESP32 Port |
+|---------|-----------|
+| Sensors | MQ-2, SHT40, MLX90614, BME680, AMG8833, DS18B20 |
+| Detection | Single-sensor threshold + multi-sensor fusion + confidence scoring |
+| Safety | Arming switch, E-stop latch, tamper, maintenance mode, watchdog |
+| Actuation | 4-channel relay with pre-activation buzzer warning + flow confirmation |
+| Alerts | Priority buzzer patterns + WS2812 LED evacuation guidance |
+| Telemetry | WiFi + MQTT JSON status to Pi 5 dashboard |
+| Standalone | Continues detecting/suppressing without WiFi |
+
+**Build:** `cd firmware/esp32 && pio run` → **Flash:** `pio run -t upload` → **Test:** `pio test -e native`
+
+See [`firmware/esp32/README.md`](firmware/esp32/README.md) for pin assignments, wiring, and full documentation.
+
+---
+
 1. **This is not a certified fire alarm system.** It is open-source research software.
 2. **NFPA 72**, **NFPA 10**, and local codes govern real fire suppression installations.
 3. **Professional certification** by a licensed fire protection engineer is mandatory before connecting suppression hardware.

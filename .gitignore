@@ -63,3 +63,4 @@ config/secrets.yaml
 *.key
 *.pem
 .env
+firmware/esp32/.pio/
